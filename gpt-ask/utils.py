@@ -52,12 +52,13 @@ def parse_args():
 
 
 def save_api_key(env_path):
-    api_key = getpass("please enter your OpenAI API Key: ")
+    api_key = getpass("Please enter your OpenAI API Key: ")
     with open(env_path, "w+") as f:
         f.write(f"OPENAI_API_KEY={api_key}")
 
 
 def set_api_key(env_path):
-    load_dotenv()
-    openai_api_key = os.getenv(env_path)
+    load_dotenv(env_path)
+    openai_api_key = os.getenv("OPENAI_API_KEY")
+    print(openai_api_key)
     openai.api_key = openai_api_key
