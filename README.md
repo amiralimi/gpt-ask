@@ -17,7 +17,7 @@ usage: main.py [-h] [-f FILE] [--set-api-key] [--question-file QUESTION_FILE] [-
    - CSV: Papers will be downloaded from a CSV file and summarized. The file should contain a column named "DOI".
    - PDF: A single paper will be summarized.
    - Folder: Papers inside the folder will be summarized.
-- `--set-api-key`: Prompts the user to input an API key and saves it in a `.env` file.
+- `--set-api-key`: Prompts the user to input an API key and saves it in a `.env` file and exits.
 - `--question-file QUESTION_FILE`: Path to a text file where each line represents a question related to the papers.
 - `--dwn-dir DWN_DIR`: Directory path to specify where to download the papers.
 - `--ans-dir ANS_DIR`: Directory path to specify where to save the answers.
