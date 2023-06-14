@@ -23,7 +23,7 @@ def parse_args():
         action="store_true",
         default=False,
         # type=bool,
-        help="Get API key as input and save it in a .env file",
+        help="Get API key as input and save it in a .env file and exits",
     )
     parser.add_argument(
         "--question-file",
