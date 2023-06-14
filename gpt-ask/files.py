@@ -4,7 +4,7 @@ from pypdf import PdfReader
 
 def process_folder(path):
     files = []
-    for f in os.listdir(path):
+    for f in sorted(os.listdir(path)):
         content = process_file(path, f)
         if content:
             files.append(content)
