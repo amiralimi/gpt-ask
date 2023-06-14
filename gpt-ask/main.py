@@ -21,9 +21,12 @@ if __name__ == "__main__":
         save_api_key(ENV_PATH)
         sys.exit()
 
+    # check and load API key
     if not os.path.exists(ENV_PATH):
         print("Please set the API key. using: python main.py --set-api-key")
         sys.exit()
+    
+    set_api_key(ENV_PATH)
 
     # check input file
     if not args.file:
@@ -52,7 +55,7 @@ if __name__ == "__main__":
     if os.path.isfile(args.file) and ".pdf" in args.file:
         files = [process_file("", args.file)]
 
-    # create summary dir if not exists
+    # create answers dir if not exists
     if not os.path.exists(args.ans_dir):
         os.makedirs(args.ans_dir)
 
@@ -69,8 +72,6 @@ if __name__ == "__main__":
                 questions.remove("")
     else:
         questions = ["summary the following text."]
-
-    set_api_key(ENV_PATH)
 
     answers = pd.DataFrame(columns=["paper name", *questions])
     answers["paper name"] = [paper["name"] for paper in files]  # type: ignore
