@@ -1,10 +1,11 @@
 import os
 from pypdf import PdfReader
+from alive_progress import alive_it
 
 
 def process_folder(path):
     files = []
-    for f in sorted(os.listdir(path)):
+    for f in alive_it(sorted(os.listdir(path))):
         content = process_file(path, f)
         if content:
             files.append(content)

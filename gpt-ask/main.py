@@ -49,6 +49,7 @@ if __name__ == "__main__":
 
     # read files in the input folder
     if os.path.isdir(args.file):
+        print("Reading PDF Files.")
         files = process_folder(args.file)
 
     # read input pdf file
