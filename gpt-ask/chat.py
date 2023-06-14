@@ -2,7 +2,6 @@ import os
 import openai
 import copy
 from alive_progress import alive_it
-from dotenv import load_dotenv
 from tiktoken import encoding_for_model
 import itertools
 from openai.error import APIConnectionError, RateLimitError
@@ -12,12 +11,6 @@ def split_list(lst, val):
     return [
         list(group) for k, group in itertools.groupby(lst, lambda x: x == val) if not k
     ]
-
-
-def set_api_key():
-    load_dotenv()
-    openai_api_key = os.getenv("OPENAI_API_KEY")
-    openai.api_key = openai_api_key
 
 
 def ask_model_page_by_page(pages, question, messages, model="gpt-3.5-turbo"):
@@ -84,10 +77,10 @@ def format_response(response, page_no=0):
 def get_response_from_model(messages, model="gpt-3.5-turbo"):
     flag = True
     while flag:
-        try: 
+        try:
             response = openai.ChatCompletion.create(model=model, messages=messages)
             flag = False
-        except (APIConnectionError, RateLimitError) as e: 
+        except (APIConnectionError, RateLimitError) as e:
             print(e)
     return response["choices"][0]["message"]["content"]  # type: ignore
 
