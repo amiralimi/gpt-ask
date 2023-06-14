@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 def parse_args():
     parser = argparse.ArgumentParser(
-        description="This tool can download papers and summarize them using chatGPT."
+        description="This tool can download papers and answer questions from them using chatGPT."
     )
     parser.add_argument(
         "-f",
