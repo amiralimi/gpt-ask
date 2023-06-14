@@ -1,75 +1,15 @@
 import os
 import sys
-import argparse
 import pandas as pd
+
 from files import process_folder, process_file
 from chat import ask_model_page_by_page, ask_model_final_results
 from downloader import download_paper, extract_DOIs
 from prompts import FIRST_MESSAGE, SECOND_MESSAGE
-from getpass import getpass
-from dotenv import load_dotenv
-import openai
+from utils import parse_args, save_api_key, set_api_key
 
 
 ENV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
-
-
-def parse_args():
-    parser = argparse.ArgumentParser(
-        description="This tool can download papers and summarize them using chatGPT."
-    )
-    parser.add_argument(
-        "-f",
-        "--file",
-        help="CSV/PDF/Folder that the program is going to process. "
-        "CSV: papers will be downloaded from csv file and summarized (file should contain a column named DOI). "
-        "PDF: paper will be summarized. "
-        "Folder: papers inside the folder will be summarized. ",
-    )
-    parser.add_argument(
-        "--set-api-key",
-        action="store_true",
-        default=False,
-        # type=bool,
-        help="Get API key as input and save it in a .env file",
-    )
-    parser.add_argument(
-        "--question-file",
-        type=str,
-        help="Path to a text file where each line is a question you have from the papers",
-    )
-    parser.add_argument(
-        "--dwn-dir",
-        default="papers",
-        type=str,
-        help="Directory path in which to download the papers",
-    )
-    parser.add_argument(
-        "--ans-dir",
-        default="answers",
-        type=str,
-        help="Directory path in which to save the answers",
-    )
-    parser.add_argument(
-        "--scihub-mirror",
-        default=None,
-        type=str,
-        help="Mirror for downloading papers from sci-hub. If not set, it is selected automatically",
-    )
-    args = parser.parse_args()
-    return args
-
-
-def save_api_key():
-    api_key = getpass("please enter your OpenAI API Key: ")
-    with open(ENV_PATH, "w+") as f:
-        f.write(f"OPENAI_API_KEY={api_key}")
-
-
-def set_api_key():
-    load_dotenv()
-    openai_api_key = os.getenv(ENV_PATH)
-    openai.api_key = openai_api_key
 
 
 if __name__ == "__main__":
@@ -78,7 +18,7 @@ if __name__ == "__main__":
 
     # set API key
     if args.set_api_key:
-        save_api_key()
+        save_api_key(ENV_PATH)
         sys.exit()
 
     if not os.path.exists(ENV_PATH):
@@ -130,7 +70,7 @@ if __name__ == "__main__":
     else:
         questions = ["summary the following text."]
 
-    set_api_key()
+    set_api_key(ENV_PATH)
 
     answers = pd.DataFrame(columns=["paper name", *questions])
     answers["paper name"] = [paper["name"] for paper in files]  # type: ignore
