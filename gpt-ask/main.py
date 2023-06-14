@@ -6,7 +6,7 @@ from files import process_folder, process_file
 from chat import ask_model_page_by_page, ask_model_final_results
 from downloader import download_paper, extract_DOIs
 from prompts import FIRST_MESSAGE, SECOND_MESSAGE
-from utils import parse_args, save_api_key, set_api_key
+from utils import parse_args, save_api_key, set_api_key, save_checkpoint, load_checkpoint
 
 
 ENV_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), ".env")
@@ -75,6 +75,12 @@ if __name__ == "__main__":
 
     answers = pd.DataFrame(columns=["paper name", *questions])
     answers["paper name"] = [paper["name"] for paper in files]  # type: ignore
+    
+    # load backup
+    if args.load_checkpoint:
+        backup = load_checkpoint(args.ans_dir)
+        ind = ~answers.isna() != ~backup.isna()
+        answers[ind] = backup[ind]
 
     for i, question in enumerate(questions):
         for j, paper in enumerate(files):
@@ -89,7 +95,4 @@ if __name__ == "__main__":
                 answers=response, question=question, messages=SECOND_MESSAGE
             )
             answers.iloc[j, i + 1] = response
-
-    res = answers.to_markdown(tablefmt="grid")
-    with open(os.path.join(args.ans_dir, "answers.txt"), "w+") as f:
-        f.write(res)
+            save_checkpoint(args.ans_dir, answers)

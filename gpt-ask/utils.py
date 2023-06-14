@@ -1,8 +1,9 @@
 import os
 import argparse
+import openai
+import pandas as pd
 from getpass import getpass
 from dotenv import load_dotenv
-import openai
 
 
 def parse_args():
@@ -42,6 +43,12 @@ def parse_args():
         help="Directory path in which to save the answers",
     )
     parser.add_argument(
+        "--load-checkpoint",
+        action="store_true",
+        default=False,
+        help="Loads previous answers from backup.json. Each time a new answer is generated the programs saves a backup of all answers. The backup is saved in ans-dir.",
+    )
+    parser.add_argument(
         "--scihub-mirror",
         default=None,
         type=str,
@@ -62,3 +69,14 @@ def set_api_key(env_path):
     openai_api_key = os.getenv("OPENAI_API_KEY")
     print(openai_api_key)
     openai.api_key = openai_api_key
+
+
+def save_checkpoint(ans_dir, answers):
+    res = answers.to_markdown(tablefmt="grid")
+    with open(os.path.join(ans_dir, "answers.txt"), "w+") as f:
+        f.write(res)
+    answers.to_json(os.path.join(ans_dir, "backup.json"))
+
+
+def load_checkpoint(ans_dir):
+    return pd.read_json(os.path.join(ans_dir, "backup.json"))
