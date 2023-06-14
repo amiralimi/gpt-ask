@@ -67,7 +67,6 @@ def save_api_key(env_path):
 def set_api_key(env_path):
     load_dotenv(env_path)
     openai_api_key = os.getenv("OPENAI_API_KEY")
-    print(openai_api_key)
     openai.api_key = openai_api_key
 
 
